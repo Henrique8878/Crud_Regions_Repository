@@ -2,19 +2,18 @@ import { api } from "@/lib/axios";
 
 
 interface updateRegionProps{
-    Id:string,
+    Id:number,
     Uf?:string,
     Nome?:string,
-    Ativo?:string
 }
 
 
-export async function updateRegion({Id,Uf,Nome,Ativo}:updateRegionProps){
+export async function updateRegion({Id,Uf,Nome}:updateRegionProps){
+    console.log(Id,Uf,Nome)
     await api.put("/api/region",{
         Id,
         Uf,
         Nome,
-        Ativo
     })
 }
     

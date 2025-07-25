@@ -1,0 +1,122 @@
+<script setup lang="ts">
+import { updateRegion } from '@/api/UpdateRegion';
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import type { RegionProps } from '@/util/region';
+import { toast } from '@/util/toast';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useField, useForm } from 'vee-validate';
+import * as z from 'zod';
+import SelectComponent from './SelectComponent.vue';
+import Button from './ui/button/Button.vue';
+import Input from './ui/input/Input.vue';
+import Label from './ui/label/Label.vue';
+
+const editRegionSchema = z.object({
+    Uf:z.string().min(2).max(2),
+    Name:z.string()
+})
+
+const {handleSubmit} = useForm({
+  validationSchema:toTypedSchema(editRegionSchema),
+  initialValues:{
+    Uf:'BH',
+    Name:'Pampulha'
+  } 
+})
+
+const {value:Uf,errorMessage:UfError} = useField<string>('Uf')
+const {value:Name,errorMessage:NameError} = useField<string>('Name')
+
+const queryClient = useQueryClient()
+
+const {mutateAsync:updateRegionCall} = useMutation({
+  mutationFn:updateRegion,
+  onSuccess(_, {Id,Nome,Uf}, __) {
+      queryClient.setQueryData(['regionListKey'],(cachedData:RegionProps[])=>{
+        if(!cachedData)
+          return
+        console.log(cachedData)
+        return cachedData.map((data)=>{
+          if(data.id===Id){
+            if(Nome&&Uf){
+              return{...data,nome:Nome,uf:Uf}
+            }else if(Nome){
+              return{...data,nome:Nome}
+            }else if(Uf){
+              return {...data,uf:Uf}
+            }
+
+            
+          }
+
+          return data
+        })
+      })
+  },
+})
+
+const props = defineProps<{
+  data:{
+    id:number
+  }
+}>()
+
+const onSubmit = handleSubmit(async (data)=>{
+    try{
+        await updateRegionCall({Id:props.data.id,Nome:data.Name,Uf:data.Uf})
+        toast.success('Região atualizada com sucesso',{
+            timeout:2000
+        })
+    }catch(e){
+      console.error(e)
+        toast.error(`Erro na atualização da região: ${e}`)
+    }
+})
+
+</script>
+
+<template>
+ <DialogContent
+  class="
+    [&>button.absolute]:!bg-white
+    [&>button.absolute]:!shadow-none
+    [&>button.absolute]:!ring-0
+    [&>button.absolute]:!ring-offset-0
+    [&>button.absolute]:focus:!ring-0
+    [&>button.absolute]:focus:!ring-offset-0
+    [&>button.absolute]:focus:!outline-none
+    [&>button.absolute]:hover:!bg-white
+  "
+>
+
+      <DialogHeader>
+        <DialogTitle>Editar perfil</DialogTitle>
+        <DialogDescription>
+          Realiza mudanças no perfil da região. Depois de preencher o formulário, clique no botão "Salvar" para salvar as mudanças.
+        </DialogDescription>
+      </DialogHeader>
+        <form class="flex flex-col gap-12" @submit.prevent="onSubmit">
+            <div class="flex flex-col gap-4">
+                <Label>Unidade Federativa (UF)</Label>
+                <SelectComponent v-model="Uf"/>
+            </div>
+            <div class="flex flex-col gap-4">
+                <Label>Nome da região</Label>
+                <Input v-model="Name" type="text" placeholder="Grande Campinas"/>
+            </div>
+            <DialogFooter>
+              <DialogClose><Button>Salvar mudanças</Button></DialogClose>
+            </DialogFooter>
+        </form>
+
+    </DialogContent>
+  
+</template>

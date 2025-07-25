@@ -9,15 +9,16 @@ import { useQuery } from '@tanstack/vue-query';
         queryFn:regionList
     })
 
+ 
 </script>
 
 <template>
-    <main class="flex flex-col gap-12 p-6 h-full">
+    <main class="flex flex-col gap-12 p-6 h-full mb-32 md:mb-80 lg:mb-48">
         <section>
             <span class="text-2xl font-medium">Listar regiões</span>
         </section>
         <section>
-            <TableListRegion v-if="regionListData" v-model="regionListData"/>
+            <TableListRegion v-if="regionListData" :data="regionListData"/>
         </section>
        
     </main>

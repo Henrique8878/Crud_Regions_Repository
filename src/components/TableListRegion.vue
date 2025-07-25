@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { activeRegion } from '@/api/ActiveRegion';
+import {
+  Dialog,
+  DialogTrigger
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -9,14 +14,88 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-interface listRegionProps{
-  Id:number,
-  Uf:string,
-  Name:string,
-  Ativo:boolean
+import { toast } from '@/util/toast';
+
+import { inactiveRegion } from '@/api/InactiveRegion';
+import type { RegionProps } from '@/util/region';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import AlertInactive from './AlertInactive.vue';
+import EditProfile from './EditProfile.vue';
+import AlertDialog from './ui/alert-dialog/AlertDialog.vue';
+import AlertDialogTrigger from './ui/alert-dialog/AlertDialogTrigger.vue';
+import Button from './ui/button/Button.vue';
+
+const queryClient = useQueryClient()
+
+
+const {mutateAsync:activeRegionCall} = useMutation({
+  mutationFn:activeRegion,
+  onSuccess(_, {id}, __) {
+      queryClient.setQueryData(['regionListKey'],(cachedData:RegionProps[])=>{
+        if(!cachedData)
+          return
+        return cachedData.map((data:RegionProps)=>{
+          if(data.id===id)
+            return {...data,ativo:true}
+          
+          return data
+        })
+      })
+  },
+})
+
+
+async function activeRegionFunction(id:number)
+{
+  try{
+    await activeRegionCall({id})
+    toast.success("Região ativada com sucesso !",{
+      timeout:2000
+    })
+  }catch(e){
+    toast.error("Erro na ativação da região: " + e)
+  }
 }
 
-const regionListData = defineModel<listRegionProps[]>()
+
+const {mutateAsync:inactiveRegionCall} = useMutation({
+  mutationFn:inactiveRegion,
+  onSuccess(_, {id}, __) {
+      queryClient.setQueryData(['regionListKey'],(cachedData:RegionProps[])=>{
+        if(!cachedData)
+          return
+        return cachedData.map((data)=>{
+          if(data.id===id)
+            return {...data,ativo:false}
+
+            return data
+        })
+      })
+  },
+})
+
+async function inactiveRegionFunction(id:number)
+{
+  try{
+    await inactiveRegionCall({id})
+    toast.success("Região inativada com sucesso !",{
+      timeout:2000
+    })
+  }catch(e){
+    toast.error("Erro na inativação da região: " + e)
+  }
+}
+
+const regionListData = defineProps<{
+  data:{
+      id: number;
+      uf: string;
+      nome: string;
+      ativo: boolean;
+  }[]
+}>()
+
+
 
 </script>
 
@@ -25,39 +104,55 @@ const regionListData = defineModel<listRegionProps[]>()
     <TableCaption>Lista de regiões adicionadas.</TableCaption>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-[100px]">
+        <TableHead class="w-[100px] !text-[0.6rem]">
           UF
         </TableHead>
-        <TableHead>Região</TableHead>
-        <TableHead>Situação</TableHead>
-        <TableHead class="text-right">
+        <TableHead class=" !text-[0.6rem]">Região</TableHead>
+        <TableHead class="!text-[0.6rem]">Situação</TableHead>
+        <TableHead class="text-center !text-[0.6rem]">Ativação</TableHead>
+        <TableHead class="text-center !text-[0.6rem]">
           Ações
         </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody class="!text-xs">
-      <TableRow>
-        <TableCell class="font-medium">
-          SP
-        </TableCell>
-        <TableCell>Grande Campinas</TableCell>
-        <TableCell>Ativo</TableCell>
-        <TableCell class="flex gap-2 text-right">
-          <v-icon name="bi-trash2" class="cursor-pointer"/>
-          <v-icon name="co-pen-alt" class="cursor-pointer"/>
-        </TableCell>
-      </TableRow>
+     
 
-       <TableRow v-for="region in regionListData">
+       <TableRow v-for="region in regionListData.data">
           <TableCell class="font-medium">
-            {{ region.Uf }}
+            <span class="!text-[0.5rem]">{{ region.uf }}</span>
           </TableCell>
-          <TableCell>{{ region.Name }}</TableCell>
-          <TableCell>{{ region.Ativo===true?'Ativo':'Inativo' }}</TableCell>
-          <TableCell class="flex gap-2 text-right">
-          <v-icon name="bi-trash2" class="cursor-pointer"/>
-          <v-icon name="co-pen-alt" class="cursor-pointer"/>
-        </TableCell>
+          <TableCell><span class="!text-[0.5rem]">{{ region.nome }}</span></TableCell>
+          <TableCell><span class="flex justify-center text-center"><span class="!text-[0.5rem]">{{ region.ativo===true?'Ativo':'Inativo' }}</span></span></TableCell>
+          <TableCell>
+            <div class="flex gap-2">
+            
+                <Button size="sm" class="!text-[0.6rem] !p-1 !bg-green-500  cursor-pointer hover:!bg-green-500/90 
+                hover:border !border-green-500" 
+                :onclick="()=>activeRegionFunction(region.id)" :disabled="region.ativo===true" variant="destructive">
+                  Ativar
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger class="flex justify-center items-center h-8 rounded-md !p-1 !bg-white">
+                    <Button size="sm" class="!text-[0.5rem] !p-1 !bg-red-500 cursor-pointer hover:!bg-red-500/90
+                    hover:border !border-red-500" :disabled="region.ativo===false">
+                      Inativar
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertInactive :id="region.id" :inactive-region-function="inactiveRegionFunction"/>
+                </AlertDialog>
+            </div>
+          </TableCell>
+          <TableCell>
+            <div class="flex justify-center">
+              <Dialog class=" !border-white !border-none">
+                    <DialogTrigger class="!bg-white !border-white !border-none">
+                      <v-icon name="co-pen-alt" class="cursor-pointer w-4 h-4"/>
+                    </DialogTrigger>
+                    <EditProfile :data="{id:region.id}"/>
+              </Dialog>
+            </div>
+          </TableCell>
        </TableRow>
 
     </TableBody>

@@ -5,10 +5,10 @@ import NavigationMenuComponent from './components/NavigationMenuComponent.vue';
 </script>
 
 <template>
-    <main class="flex flex-col justify-between w-full h-screen h-56">
+    <main class="flex flex-col gap-7 justify-between w-full">
         <NavigationMenuComponent/>
             <RouterView/>
-        <FooterRegion/>
+        <FooterRegion class=""/>
     </main>
     
 </template>

@@ -10,9 +10,11 @@ import { useField, useForm } from 'vee-validate';
 import { useToast } from "vue-toastification";
 import * as z from 'zod';
 
+import minas from '../assets/minas.png';
+
 const addRegionSchema = z.object({
     Uf:z.string().min(2).max(2),
-    Name:z.string(),
+    Name:z.string().max(30),
 })
 
 export type regionSchemaType = z.infer<typeof addRegionSchema>
@@ -44,7 +46,7 @@ const onSubmit = handleSubmit(async (data)=>{
 </script >
 
 <template>
-    <main class="flex flex-col gap-12 p-6 h-full">
+    <main class="flex flex-col items-center gap-16 p-6 md:mb-44">
         <section>
             <span class="text-2xl font-medium">Adicionar região</span>
         </section>
@@ -55,10 +57,12 @@ const onSubmit = handleSubmit(async (data)=>{
             </div>
             <div class="flex flex-col gap-4">
                 <Label>Nome da região</Label>
-                <Input v-model="Name" type="text" placeholder="Grande Campinas"/>
+                <Input v-model="Name" type="text" placeholder="Grande Campinas" class="md:w-[30rem] lg:w-[35rem]"/>
             </div>
             <Button>Salvar região</Button>
         </form>
+
+        <img :src="minas" alt="" srcset="" class="rounded-xl w-72 h-56 md:w-96 md:h-72">
        
     </main>
 </template>
