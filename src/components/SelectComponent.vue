@@ -9,6 +9,10 @@
     SelectValue
 } from '@/components/ui/select';
 
+
+
+const modelValue = defineModel<string>()
+
 import { ref } from 'vue';
 
 let states = ref([
@@ -45,7 +49,7 @@ let states = ref([
 
 
 <template>
-    <Select>
+    <Select v-model="modelValue">
         <SelectTrigger class="w-full !bg-white">
         <SelectValue placeholder="Selecione sua UF" />
         </SelectTrigger>
