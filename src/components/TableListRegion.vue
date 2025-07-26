@@ -121,14 +121,14 @@ const regionListData = defineProps<{
     
          <TableRow v-for="region in regionListData.data">
             <TableCell class="font-medium">
-              <span class="!text-[0.5rem]">{{ region.uf }}</span>
+              <span class="!text-[0.5rem] md:!text-[0.8rem]">{{ region.uf }}</span>
             </TableCell>
-            <TableCell><span class="!text-[0.5rem]">{{ region.nome }}</span></TableCell>
-            <TableCell><span class="flex justify-center text-center"><span class="!text-[0.5rem]">{{ region.ativo===true?'Ativo':'Inativo' }}</span></span></TableCell>
+            <TableCell><span class="!text-[0.5rem] md:!text-[0.8rem]">{{ region.nome }}</span></TableCell>
+            <TableCell><span class="flex justify-center text-center"><span class="!text-[0.5rem] md:!text-[0.8rem]">{{ region.ativo===true?'Ativo':'Inativo' }}</span></span></TableCell>
             <TableCell class="flex justify-center">
               <div class="flex gap-2">
     
-                  <Button size="sm" class="!text-[0.6rem] !p-1 !bg-green-500  cursor-pointer hover:!bg-green-500/90
+                  <Button size="sm" class="!text-[0.6rem]  !p-1 !bg-green-500  cursor-pointer hover:!bg-green-500/90
                   hover:border !border-green-500"
                   :onclick="()=>activeRegionFunction(region.id)" :disabled="region.ativo===true" variant="destructive">
                     Ativar
