@@ -10,6 +10,7 @@ import { useField, useForm } from 'vee-validate';
 import { useToast } from "vue-toastification";
 import * as z from 'zod';
 
+import { AxiosError } from 'axios';
 import minas from '../assets/minas.png';
 
 const addRegionSchema = z.object({
@@ -39,7 +40,12 @@ const onSubmit = handleSubmit(async (data)=>{
             timeout:2000
         })
     }catch(e){
-        toast.error(`Erro na criação da região: ${e}`)
+        if(e instanceof AxiosError){
+
+            toast.error(`Erro na criação da região: ${e.response?.data}`)
+            return
+        }
+            toast.error(`Erro na criação da região: ${e.response?.data}`)
     }
 })
 
