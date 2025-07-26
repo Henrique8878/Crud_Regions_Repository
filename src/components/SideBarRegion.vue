@@ -38,7 +38,6 @@ import SidebarMenuItem from './ui/sidebar/SidebarMenuItem.vue';
             return current.ativo===true?accumulator+=1:accumulator
         },0)
 
-        console.log(sum)
 
         return sum
     }

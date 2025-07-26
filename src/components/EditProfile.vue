@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { toTypedSchema } from '@vee-validate/zod';
 import { AxiosError } from 'axios';
 import { useField, useForm } from 'vee-validate';
+import { watch } from 'vue';
 import * as z from 'zod';
 import SelectComponent from './SelectComponent.vue';
 import Button from './ui/button/Button.vue';
@@ -37,11 +38,20 @@ const { data: regionByIdCall } = useQuery({
   queryFn: regionById
 });
 
-const {handleSubmit} = useForm({
+const {handleSubmit,setFieldValue} = useForm({
   validationSchema:toTypedSchema(editRegionSchema),
   initialValues:{
-    Uf:regionByIdCall.value?.uf,
-    Name:regionByIdCall.value?.nome
+    Uf:'',
+    Name:''
+  }
+})
+
+
+
+watch(regionByIdCall, (newValue) => {
+  if (newValue) {
+    setFieldValue('Uf',newValue.uf)
+    setFieldValue('Name',newValue.nome)
   }
 })
 
