@@ -12,6 +12,7 @@ import type { RegionProps } from '@/util/region';
 import { toast } from '@/util/toast';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { toTypedSchema } from '@vee-validate/zod';
+import { AxiosError } from 'axios';
 import { useField, useForm } from 'vee-validate';
 import * as z from 'zod';
 import SelectComponent from './SelectComponent.vue';
@@ -26,10 +27,6 @@ const editRegionSchema = z.object({
 
 const {handleSubmit} = useForm({
   validationSchema:toTypedSchema(editRegionSchema),
-  initialValues:{
-    Uf:'BH',
-    Name:'Pampulha'
-  } 
 })
 
 const {value:Uf,errorMessage:UfError} = useField<string>('Uf')
@@ -77,7 +74,13 @@ const onSubmit = handleSubmit(async (data)=>{
         })
     }catch(e){
       console.error(e)
-        toast.error(`Erro na atualização da região: ${e}`)
+      if(e instanceof AxiosError){
+
+        toast.error(`Erro na atualização da região: ${e.response?.data}`)
+        return
+      }
+
+      toast.error(`Erro na atualização da região: ${e}`)
     }
 })
 
@@ -87,6 +90,9 @@ const onSubmit = handleSubmit(async (data)=>{
  <DialogContent
   class="
     [&>button.absolute]:!bg-white
+     dark:[&>button.absolute]:!bg-black
+     dark:hover:!border-zinc-700
+     hover:!border-zinc-700
     [&>button.absolute]:!shadow-none
     [&>button.absolute]:!ring-0
     [&>button.absolute]:!ring-offset-0
@@ -113,7 +119,9 @@ const onSubmit = handleSubmit(async (data)=>{
                 <Input v-model="Name" type="text" placeholder="Grande Campinas"/>
             </div>
             <DialogFooter>
-              <DialogClose><Button>Salvar mudanças</Button></DialogClose>
+              <DialogClose class="flex justify-center w-full hover:!border-white dark:!bg-[#09090b] dark:hover:!border-black">
+                <Button class="hover:!border-zinc-700 dark:!text-white dark:hover:!border-zinc-700">Salvar mudanças</Button>
+              </DialogClose>
             </DialogFooter>
         </form>
 

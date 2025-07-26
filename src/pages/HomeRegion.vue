@@ -14,8 +14,17 @@ import regiao from '../assets/regiao.png';
             </span>
         </section>
         <section class="flex flex-col gap-6 md:w-96">
-            <Button class="!font-light w-full">Adicionar região</Button>
-            <Button class="!bg-[#E6E6E6] !text-black !font-light">Listar regiões</Button>
+            <RouterLink to="/add-region">
+                <Button class="!font-light !w-full hover:!border-zinc-700 dark:!bg-white dark:hover:!border-zinc-700">
+                    Adicionar região
+                </Button>
+            </RouterLink>
+            <RouterLink to="/list-region">
+                <Button class="!w-full !bg-[#E6E6E6] !text-black !font-light
+                hover:!border-zinc-700 dark:!bg-zinc-700 dark:!text-white dark:hover:!border-black">
+                    Listar regiões
+                </Button>
+            </RouterLink>
         </section>
 
         <img :src="regiao" alt="" srcset="" class="w-56 h-56 rounded-2xl">

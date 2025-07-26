@@ -50,7 +50,7 @@ let states = ref([
 
 <template>
     <Select v-model="modelValue">
-        <SelectTrigger class="w-full !bg-white">
+        <SelectTrigger class="w-full !bg-white dark:!bg-black dark:hover:!border-zinc-700">
         <SelectValue placeholder="Selecione sua UF" />
         </SelectTrigger>
         <SelectContent>

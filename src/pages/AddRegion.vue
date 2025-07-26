@@ -59,7 +59,7 @@ const onSubmit = handleSubmit(async (data)=>{
                 <Label>Nome da região</Label>
                 <Input v-model="Name" type="text" placeholder="Grande Campinas" class="md:w-[30rem] lg:w-[35rem]"/>
             </div>
-            <Button>Salvar região</Button>
+            <Button class="dark:!text-white dark:hover:!border-zinc-700 !outline-none focus:outline-none">Salvar região</Button>
         </form>
 
         <img :src="minas" alt="" srcset="" class="rounded-xl w-72 h-56 md:w-96 md:h-72">

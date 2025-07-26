@@ -5,6 +5,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList
 } from '@/components/ui/navigation-menu';
+import SidebarTrigger from './ui/sidebar/SidebarTrigger.vue';
 </script>
 
 
@@ -12,6 +13,7 @@ import {
     <NavigationMenu class="bg-[#111111] max-w-full flex justify-between p-3">
       <NavigationMenuList>
         <NavigationMenuItem class="flex gap-2 items-center">
+          <SidebarTrigger class="!bg-black !text-white focus-visible:!ring-0 focus-visible:!border-none hover:!border hover:!border-zinc-500"/>
           <v-icon name="fc-globe"/>
           <span class="text-white">Regiões CRUD</span>
         </NavigationMenuItem>

@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/vue-query';
 </script>
 
 <template>
-    <main class="flex flex-col gap-12 p-6 h-full mb-32 md:mb-80 lg:mb-48">
+    <main class="flex flex-col gap-12 pl-4 h-full mb-32 md:mb-80 lg:mb-48">
         <section>
             <span class="text-2xl font-medium">Listar regiões</span>
         </section>

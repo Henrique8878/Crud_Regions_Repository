@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog';
 
 defineProps<{
@@ -26,7 +26,8 @@ defineProps<{
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel class="!bg-red-500 text-white hover:text-white border !border-red-500 hover:!bg-red-500/90 !border-none !outline-none focus-visible:!ring-0 focus-visible:!border-none">
+        <AlertDialogCancel class="!bg-red-500 text-white hover:text-white border !border-red-500 hover:!bg-red-500/90 
+        !border-none !outline-none focus-visible:!ring-0 focus-visible:!border-none">
             Cancelar
         </AlertDialogCancel>
         <AlertDialogAction :onclick="()=>inactiveRegionFunction(id)"  class="!bg-green-500 hover:!bg-green-500/90 text-white hover:text-white border !border-green-500 
