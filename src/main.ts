@@ -5,7 +5,7 @@ import { BiTrash2, CoPenAlt, FcGlobe } from 'oh-vue-icons/icons'
 import { createApp } from 'vue'
 import type { PluginOptions } from 'vue-toastification'
 import Toast from "vue-toastification"
-// main.ts
+
 import 'vue-toastification/dist/index.css'
 
 import App from './App.vue'
@@ -22,13 +22,11 @@ addIcons(FcGlobe,BiTrash2,CoPenAlt)
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Ativa o prefetch na renderização (experimental)
       experimental_prefetchInRender: true
     }
   }
 })
 
-// Agora sim, com tipagem correta
 const vueQueryOptions: VueQueryPluginOptions = {
   queryClient
 }
