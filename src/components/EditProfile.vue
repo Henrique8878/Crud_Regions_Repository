@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { regionById } from '@/api/RegionById';
 import { updateRegion } from '@/api/UpdateRegion';
 import {
   DialogClose,
@@ -10,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import type { RegionProps } from '@/util/region';
 import { toast } from '@/util/toast';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { toTypedSchema } from '@vee-validate/zod';
 import { AxiosError } from 'axios';
 import { useField, useForm } from 'vee-validate';
@@ -25,9 +26,25 @@ const editRegionSchema = z.object({
     Name:z.string()
 })
 
+const props = defineProps<{
+  data:{
+    id:number
+  }
+}>()
+
+const { data: regionByIdCall } = useQuery({
+  queryKey: ['regionById', props.data.id] as const,
+  queryFn: regionById
+});
+
 const {handleSubmit} = useForm({
   validationSchema:toTypedSchema(editRegionSchema),
+  initialValues:{
+    Uf:regionByIdCall.value?.uf,
+    Name:regionByIdCall.value?.nome
+  }
 })
+
 
 const {value:Uf,errorMessage:UfError} = useField<string>('Uf')
 const {value:Name,errorMessage:NameError} = useField<string>('Name')
@@ -60,11 +77,7 @@ const {mutateAsync:updateRegionCall} = useMutation({
   },
 })
 
-const props = defineProps<{
-  data:{
-    id:number
-  }
-}>()
+
 
 const onSubmit = handleSubmit(async (data)=>{
     try{
